@@ -25,137 +25,138 @@ fi
 #    Install basic packages
 #---------------------------------------------------------------------
 echo "--------------------------------------------------------------------"
-	echo -e "\x1B[01;92m# Installing Dependencies \x1B[0m"	
-		apt update > /dev/null 2>&1 && apt install -y fio speedtest-cli lsb-release > /dev/null 2>&1
+        echo -e "\x1B[01;92m# Installing Dependencies \x1B[0m"
+                apt update > /dev/null 2>&1 && apt install -y fio python-pip lsb-release > /dev/null 2>&1
+        pip install speedtest-cli
 echo "--------------------------------------------------------------------"
 sleep 2
-	echo -e "\x1B[01;92m# Date \x1B[0m"
-		date
+        echo -e "\x1B[01;92m# Date \x1B[0m"
+                date
 echo "--------------------------------------------------------------------"
-	echo -e "\x1B[01;92m# Hostname \x1B[0m"
-		hostname
-echo "--------------------------------------------------------------------"
-sleep 2
-	echo -e "\x1B[01;92m# OS Installed \x1B[0m"
-		lsb_release -a
+        echo -e "\x1B[01;92m# Hostname \x1B[0m"
+                hostname
 echo "--------------------------------------------------------------------"
 sleep 2
-	echo -e "\x1B[01;92m# Number CPUs/Cores\x1B[0m"
-		lscpu
+        echo -e "\x1B[01;92m# OS Installed \x1B[0m"
+                lsb_release -a
 echo "--------------------------------------------------------------------"
 sleep 2
-	echo -e "\x1B[01;92m# Memory Installed \x1B[0m"
-		free -mh
+        echo -e "\x1B[01;92m# Number CPUs/Cores\x1B[0m"
+                lscpu
 echo "--------------------------------------------------------------------"
 sleep 2
-	echo -e "\x1B[01;92m# Partition Layout \x1B[0m"
-		df -Thl
+        echo -e "\x1B[01;92m# Memory Installed \x1B[0m"
+                free -mh
 echo "--------------------------------------------------------------------"
 sleep 2
-	echo -e "\x1B[01;92m# Disk Layout \x1B[0m"
-		lsblk 
+        echo -e "\x1B[01;92m# Partition Layout \x1B[0m"
+                df -Thl
 echo "--------------------------------------------------------------------"
 sleep 2
-	echo -e "\x1B[01;92m# Net Test1 \x1B[0m"
-		speedtest-cli
+        echo -e "\x1B[01;92m# Disk Layout \x1B[0m"
+                lsblk
+echo "--------------------------------------------------------------------"
+sleep 2
+        echo -e "\x1B[01;92m# Net Test1 \x1B[0m"
+                speedtest-cli
 sleep 2
 echo "--------------------------------------------------------------------"
-	echo -e "\x1B[01;92m# Net Test2 \x1B[0m"
-		speedtest-cli
+        echo -e "\x1B[01;92m# Net Test2 \x1B[0m"
+                speedtest-cli
 echo
 sleep 2
 echo "--------------------------------------------------------------------"
-	echo -e "\x1B[01;92m# Net Test3 \x1B[0m"
-		speedtest-cli
+        echo -e "\x1B[01;92m# Net Test3 \x1B[0m"
+                speedtest-cli
 echo
 echo "--------------------------------------------------------------------"
-	echo -e "\x1B[01;92m# dd Test \x1B[0m"
-		echo "I/O Latency Test"
-			time dd if=/dev/zero of=testfile2 bs=512 count=1000 oflag=dsync
+        echo -e "\x1B[01;92m# dd Test \x1B[0m"
+                echo "I/O Latency Test"
+                        time dd if=/dev/zero of=testfile2 bs=512 count=1000 oflag=dsync
 echo
-	echo "I/O Throughput Test"
-		time dd if=/dev/zero of=testfile1 bs=64k count=16k conv=fdatasync
+        echo "I/O Throughput Test"
+                time dd if=/dev/zero of=testfile1 bs=64k count=16k conv=fdatasync
 echo
-	echo "I/O Reading Test"
-		time dd if=testfile1 of=/dev/null bs=1G count=1
+        echo "I/O Reading Test"
+                time dd if=testfile1 of=/dev/null bs=1G count=1
 rm -f testfile* 2>&1
 echo
 echo "--------------------------------------------------------------------"
-echo -e "\x1B[01;92m# I/O Latency Test with avg \x1B[0m" 
-	io=$( ( dd if=/dev/zero of=test_$$ bs=512 count=1000 oflag=dsync ) 2>&1 | awk -F, '{io=$NF} END { print io}' | sed 's/^[ \t]*//;s/[ \t]*$//' )
+echo -e "\x1B[01;92m# I/O Latency Test with avg \x1B[0m"
+        io=$( ( dd if=/dev/zero of=test_$$ bs=512 count=1000 oflag=dsync ) 2>&1 | awk -F, '{io=$NF} END { print io}' | sed 's/^[ \t]*//;s/[ \t]*$//' )
 sleep 2
-	io2=$( ( dd if=/dev/zero of=test_$$ bs=512 count=1000 oflag=dsync ) 2>&1 | awk -F, '{io=$NF} END { print io}' | sed 's/^[ \t]*//;s/[ \t]*$//' )
+        io2=$( ( dd if=/dev/zero of=test_$$ bs=512 count=1000 oflag=dsync ) 2>&1 | awk -F, '{io=$NF} END { print io}' | sed 's/^[ \t]*//;s/[ \t]*$//' )
 sleep 2
-	io3=$( ( dd if=/dev/zero of=test_$$ bs=512 count=1000 oflag=dsync ) 2>&1 | awk -F, '{io=$NF} END { print io}' | sed 's/^[ \t]*//;s/[ \t]*$//' )
-# Calculating avg I/O 
-	ioraw=$( echo $io | awk 'NR==1 {print $1}' )
-	ioraw2=$( echo $io2 | awk 'NR==1 {print $1}' )
-	ioraw3=$( echo $io3 | awk 'NR==1 {print $1}' )
-	ioall=$( awk 'BEGIN{print '$ioraw' + '$ioraw2' + '$ioraw3'}' )
-	ioavg=$( awk 'BEGIN{print '$ioall'/3}' )
+        io3=$( ( dd if=/dev/zero of=test_$$ bs=512 count=1000 oflag=dsync ) 2>&1 | awk -F, '{io=$NF} END { print io}' | sed 's/^[ \t]*//;s/[ \t]*$//' )
+# Calculating avg I/O
+        ioraw=$( echo $io | awk 'NR==1 {print $1}' )
+        ioraw2=$( echo $io2 | awk 'NR==1 {print $1}' )
+        ioraw3=$( echo $io3 | awk 'NR==1 {print $1}' )
+        ioall=$( awk 'BEGIN{print '$ioraw' + '$ioraw2' + '$ioraw3'}' )
+        ioavg=$( awk 'BEGIN{print '$ioall'/3}' )
 # Output of DD result
-	echo "I/O Latency (1st run)     : $io"
-	echo "I/O Latency (2nd run)     : $io2"
-	echo "I/O Latency (3rd run)     : $io3"
-	echo "Average I/O Latency       : $ioavg"
+        echo "I/O Latency (1st run)     : $io"
+        echo "I/O Latency (2nd run)     : $io2"
+        echo "I/O Latency (3rd run)     : $io3"
+        echo "Average I/O Latency       : $ioavg"
 echo
 rm -f test* 2>&1
 echo "--------------------------------------------------------------------"
-echo -e "\x1B[01;92m# I/O Throughput Test with avg\x1B[0m" 
-	io=$( ( dd if=/dev/zero of=tesst_$$ bs=64k count=16k conv=fdatasync ) 2>&1 | awk -F, '{io=$NF} END { print io}' | sed 's/^[ \t]*//;s/[ \t]*$//' )
+echo -e "\x1B[01;92m# I/O Throughput Test with avg\x1B[0m"
+        io=$( ( dd if=/dev/zero of=tesst_$$ bs=64k count=16k conv=fdatasync ) 2>&1 | awk -F, '{io=$NF} END { print io}' | sed 's/^[ \t]*//;s/[ \t]*$//' )
 sleep 2
-	io2=$( ( dd if=/dev/zero of=tesst_$$ bs=64k count=16k conv=fdatasync ) 2>&1 | awk -F, '{io=$NF} END { print io}' | sed 's/^[ \t]*//;s/[ \t]*$//' )
+        io2=$( ( dd if=/dev/zero of=tesst_$$ bs=64k count=16k conv=fdatasync ) 2>&1 | awk -F, '{io=$NF} END { print io}' | sed 's/^[ \t]*//;s/[ \t]*$//' )
 sleep 2
-	io3=$( ( dd if=/dev/zero of=tesst_$$ bs=64k count=16k conv=fdatasync ) 2>&1 | awk -F, '{io=$NF} END { print io}' | sed 's/^[ \t]*//;s/[ \t]*$//' )
-# Calculating avg I/O 
-	ioraw=$( echo $io | awk 'NR==1 {print $1}' )
-	ioraw2=$( echo $io2 | awk 'NR==1 {print $1}' )
-	ioraw3=$( echo $io3 | awk 'NR==1 {print $1}' )
-	ioall=$( awk 'BEGIN{print '$ioraw' + '$ioraw2' + '$ioraw3'}' )
-	ioavg=$( awk 'BEGIN{print '$ioall'/3}' )
+        io3=$( ( dd if=/dev/zero of=tesst_$$ bs=64k count=16k conv=fdatasync ) 2>&1 | awk -F, '{io=$NF} END { print io}' | sed 's/^[ \t]*//;s/[ \t]*$//' )
+# Calculating avg I/O
+        ioraw=$( echo $io | awk 'NR==1 {print $1}' )
+        ioraw2=$( echo $io2 | awk 'NR==1 {print $1}' )
+        ioraw3=$( echo $io3 | awk 'NR==1 {print $1}' )
+        ioall=$( awk 'BEGIN{print '$ioraw' + '$ioraw2' + '$ioraw3'}' )
+        ioavg=$( awk 'BEGIN{print '$ioall'/3}' )
 # Output of DD result
-	echo "I/O Throughput (1st run)     : $io"
-	echo "I/O Throughput (2nd run)     : $io2"
-	echo "I/O Throughput (3rd run)     : $io3"
-	echo "Average I/O Throughput       : $ioavg"
+        echo "I/O Throughput (1st run)     : $io"
+        echo "I/O Throughput (2nd run)     : $io2"
+        echo "I/O Throughput (3rd run)     : $io3"
+        echo "Average I/O Throughput       : $ioavg"
 echo
 echo "--------------------------------------------------------------------"
-echo -e "\x1B[01;92m# I/O Reading Test with avg\x1B[0m" 
-#echo "# Flushing cache" 
+echo -e "\x1B[01;92m# I/O Reading Test with avg\x1B[0m"
+#echo "# Flushing cache"
 #sudo echo 3 | sudo tee /proc/sys/vm/drop_caches
-	io=$( ( dd if=tesst_$$ of=/dev/null bs=1G count=1 ) 2>&1 | awk -F, '{io=$NF} END { print io}' | sed 's/^[ \t]*//;s/[ \t]*$//' )
-	sleep 2
-	io2=$( ( dd if=tesst_$$ of=/dev/null bs=1G count=1 ) 2>&1 | awk -F, '{io=$NF} END { print io}' | sed 's/^[ \t]*//;s/[ \t]*$//' )
-	sleep 2
-	io3=$( ( dd if=tesst_$$ of=/dev/null bs=1G count=1 ) 2>&1 | awk -F, '{io=$NF} END { print io}' | sed 's/^[ \t]*//;s/[ \t]*$//' )
-# Calculating avg I/O 
-	ioraw=$( echo $io | awk 'NR==1 {print $1}' )
-	ioraw2=$( echo $io2 | awk 'NR==1 {print $1}' )
-	ioraw3=$( echo $io3 | awk 'NR==1 {print $1}' )
-	ioall=$( awk 'BEGIN{print '$ioraw' + '$ioraw2' + '$ioraw3'}' )
-	ioavg=$( awk 'BEGIN{print '$ioall'/3}' )
+        io=$( ( dd if=tesst_$$ of=/dev/null bs=1G count=1 ) 2>&1 | awk -F, '{io=$NF} END { print io}' | sed 's/^[ \t]*//;s/[ \t]*$//' )
+        sleep 2
+        io2=$( ( dd if=tesst_$$ of=/dev/null bs=1G count=1 ) 2>&1 | awk -F, '{io=$NF} END { print io}' | sed 's/^[ \t]*//;s/[ \t]*$//' )
+        sleep 2
+        io3=$( ( dd if=tesst_$$ of=/dev/null bs=1G count=1 ) 2>&1 | awk -F, '{io=$NF} END { print io}' | sed 's/^[ \t]*//;s/[ \t]*$//' )
+# Calculating avg I/O
+        ioraw=$( echo $io | awk 'NR==1 {print $1}' )
+        ioraw2=$( echo $io2 | awk 'NR==1 {print $1}' )
+        ioraw3=$( echo $io3 | awk 'NR==1 {print $1}' )
+        ioall=$( awk 'BEGIN{print '$ioraw' + '$ioraw2' + '$ioraw3'}' )
+        ioavg=$( awk 'BEGIN{print '$ioall'/3}' )
 # Output of DD result
-	echo "I/O Reading (1st run)     : $io"
-	echo "I/O Reading (2nd run)     : $io2"
-	echo "I/O Reading (3rd run)     : $io3"
-	echo "Average I/O Reading       : $ioavg"
+        echo "I/O Reading (1st run)     : $io"
+        echo "I/O Reading (2nd run)     : $io2"
+        echo "I/O Reading (3rd run)     : $io3"
+        echo "Average I/O Reading       : $ioavg"
 rm -f tesst* 2>&1
 echo "--------------------------------------------------------------------"
 echo -e "\x1B[01;92m# FIO Random Read Performance Test \x1B[0m"
 sleep 2
 
-fio --name=randread --ioengine=libaio --iodepth=16 --rw=randread --bs=4k --direct=0 --size=1G --numjobs=4 --runtime=240 --group_reporting
+fio --fallocate=none --name=randread --ioengine=libaio --iodepth=16 --rw=randread --bs=4k --direct=0 --size=1G --numjobs=4 --runtime=240 --group_reporting
 echo "--------------------------------------------------------------------"
 rm randread*
 sleep 2
 
 echo -e "\x1B[01;92m# FIO Random Write Performance Test \x1B[0m"
-fio --name=randwrite --ioengine=libaio --iodepth=1 --rw=randwrite --bs=4k --direct=0 --size=1G --numjobs=2 --runtime=240 --group_reporting
+fio --fallocate=none --name=randwrite --ioengine=libaio --iodepth=1 --rw=randwrite --bs=4k --direct=0 --size=1G --numjobs=2 --runtime=240 --group_reporting
 echo "--------------------------------------------------------------------"
 rm randwrite*
 sleep 2
 
 echo -e "\x1B[01;92m# FIO Read/Write Performance Test \x1B[0m"
-fio --randrepeat=1 --ioengine=libaio --direct=0 --gtod_reduce=1 --name=test --filename=random_read_write.fio --bs=4k --iodepth=64 --size=1G --readwrite=randrw --rwmixread=75 --group_reporting
+fio --fallocate=none --randrepeat=1 --ioengine=libaio --direct=0 --gtod_reduce=1 --name=test --filename=random_read_write.fio --bs=4k --iodepth=64 --size=1G --readwrite=randrw --rwmixread=75 --group_reporting
 rm random_read_write.fio
 echo "--------------------------------------------------------------------"
